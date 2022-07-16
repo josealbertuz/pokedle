@@ -1,7 +1,15 @@
-import type { AppProps } from 'next/app'
+import type { AppProps } from "next/app";
+import { globalStyles } from "../stitches.config";
+import { ToastProvider } from "../context/ToastContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  globalStyles();
+
+  return (
+    <ToastProvider>
+      <Component {...pageProps} />
+    </ToastProvider>
+  );
 }
 
-export default MyApp
+export default MyApp;
