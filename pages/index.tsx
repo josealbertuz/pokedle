@@ -1,33 +1,26 @@
-import type { GetStaticProps } from 'next'
-import { DAY_SECONDS } from '../constants/pokemon';
-import { generatePokemonId } from '../utils/utils';
+import type { GetStaticProps } from "next";
+import { DAY_SECONDS } from "../constants/time";
+import { PokemonRepository } from "../repository/pokemon";
+import { Pokedle } from "../screens/Pokedle";
 
 export const getStaticProps: GetStaticProps = async () => {
 
-  const pokemonId = generatePokemonId()
-
-  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
-
-  const data = await response.json()
-
   return {
     props: {
-      pokemonName: data.name
+      answer: "PIKACHU",
+      pokemonNames: ['']
     },
-    revalidate: DAY_SECONDS
-  }
-}
+    revalidate: DAY_SECONDS,
+  };
+};
 
 type HomePageProps = {
-  pokemonName: string
-}
+  answer: string;
+  pokemonNames: string[];
+};
 
-const Home = ({pokemonName}: HomePageProps) => {
-  return (
-    <div>
-     {pokemonName}
-    </div>
-  )
-}
+const Home = ({ answer, pokemonNames }: HomePageProps) => (
+  <Pokedle answer={answer} pokemonNames={pokemonNames} />
+);
 
-export default Home
+export default Home;
