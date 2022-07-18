@@ -12,6 +12,7 @@ import { Keyboard } from "../../components/Keyboard";
 import { Letter } from "../../components/Letter";
 import { ToastType, useToast } from '../../context/ToastContext';
 import { KeyboardKeysActions } from '../../models/keyboard';
+import { Dialog } from "../../components/Dialog";
 
 type PokedleProps = {
   answer: string
@@ -35,6 +36,7 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
   const show = useToast()
 
   const loose = !win && tries === MAX_TRIES
+  const endGame = loose || win
 
   const addLetter = (value: string) => {
     if (pokemonNameLength === currentLetterIndex) return;
@@ -111,7 +113,6 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
 
   useEffect(() => {
     if (!win) return
-    
     const timeout = setTimeout(() => {
       show({message: 'Has ganado', type: ToastType.SUCCESS, duration: 2000})
     }, lettersRowAnimationDuration)
@@ -139,9 +140,12 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
             </LettersRow>
           ))}
         </LettersGrid>
-        {(win || loose) && <button onClick={() => reset()}>Reset</button>}
+        {endGame && <button onClick={() => reset()}>Reset</button>}
       </LettersContainer>
       <Keyboard onKeyPress={onKeyPress} />
+      <Dialog open={endGame} onClose={reset}>
+        <div>perdiste</div>
+      </Dialog>
     </PokedleRoot>
   );
 };
