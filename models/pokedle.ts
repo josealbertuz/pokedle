@@ -9,6 +9,7 @@ export enum LetterStatus {
 export type Letter = {
   value: string;
   status: LetterStatus;
+  animate?: boolean
 };
 
 type MatrixPosition = {
@@ -40,18 +41,28 @@ export const LettersMatrix = {
           return {
             value,
             status: LetterStatus.CORRECT,
+            animate: true
           };
-
-        if (pokemonName.includes(value))
+          
+        if (pokemonName.includes(value) && letters[rowIndex])
           return {
             value,
             status: LetterStatus.PRESENT,
+            animate: true
           };
 
         return {
           value,
           status: LetterStatus.NOT_PRESENT,
+          animate: true
         };
       });
     }),
+    win: (letters: Letter[], pokemonName: string) => {
+      const userAnswer = letters.map(({value}) => value).join('')
+
+      const isAnswerCorrect = letters.every(({status}) => status === LetterStatus.CORRECT)
+
+      return userAnswer === pokemonName && isAnswerCorrect
+    }
 };
