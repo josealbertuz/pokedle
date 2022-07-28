@@ -9,12 +9,42 @@ export enum LetterStatus {
 export type Letter = {
   value: string;
   status: LetterStatus;
-  animate?: boolean
+  animate?: boolean;
 };
 
 type MatrixPosition = {
   row: number;
   column: number;
+};
+
+type CheckLetterParams = {
+  letter: string;
+  answer: string;
+  index: number;
+};
+
+export const Letters = {
+  checkLetter: ({ letter, answer, index }: CheckLetterParams): Letter => {
+    if (answer[index] === letter)
+      return {
+        value: letter,
+        status: LetterStatus.CORRECT,
+        animate: true,
+      };
+
+    if (answer.includes(letter))
+      return {
+        value: letter,
+        status: LetterStatus.PRESENT,
+        animate: true,
+      };
+
+    return {
+      value: letter,
+      status: LetterStatus.NOT_PRESENT,
+      animate: true,
+    };
+  },
 };
 
 export const LettersMatrix = {
@@ -32,37 +62,27 @@ export const LettersMatrix = {
         return newLetter;
       });
     }),
-  checkLetters: (letters: Letter[][], tries: number, pokemonName: string) =>
+  checkLetters: (letters: Letter[][], tries: number, answer: string) =>
     letters.map((lettersRow, rowIndex) => {
       if (rowIndex !== tries) return lettersRow;
 
-      return lettersRow.map(({ value }, columnIndex) => {
-        if (pokemonName[columnIndex] === value)
-          return {
-            value,
-            status: LetterStatus.CORRECT,
-            animate: true
-          };
-          
-        if (pokemonName.includes(value) && letters[rowIndex])
-          return {
-            value,
-            status: LetterStatus.PRESENT,
-            animate: true
-          };
-
-        return {
-          value,
-          status: LetterStatus.NOT_PRESENT,
-          animate: true
-        };
+      return lettersRow.map(({ value: letter }, columnIndex) => {
+        return Letters.checkLetter({ letter, answer, index: columnIndex });
       });
     }),
-    win: (letters: Letter[], pokemonName: string) => {
-      const userAnswer = letters.map(({value}) => value).join('')
+  win: (letters: Letter[], pokemonName: string) => {
+    const userAnswer = letters.map(({ value }) => value).join("");
 
-      const isAnswerCorrect = letters.every(({status}) => status === LetterStatus.CORRECT)
+    const isAnswerCorrect = letters.every(
+      ({ status }) => status === LetterStatus.CORRECT
+    );
 
-      return userAnswer === pokemonName && isAnswerCorrect
-    }
+    return userAnswer === pokemonName && isAnswerCorrect;
+  },
+  getWordFromARow: (letters: Letter[][], rowIndex: number) =>
+    letters[rowIndex].map((letter) => letter.value).join(""),
+  getWordsFromMatrix: (letters: Letter[][]) =>
+    letters.map((lettersRow) =>
+      lettersRow.map((letter) => letter.value).join("")
+    ),
 };

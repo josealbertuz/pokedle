@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from 'react';
 import {
   PokedleRoot,
   LettersContainer,
@@ -6,13 +6,11 @@ import {
   LettersGrid,
   LettersRow,
 } from "./Pokedle.styles";
-import { generateLetters } from "../../utils/utils";
+import { generateLetters, generateLettersFromLocalStorage } from '../../utils/utils';
 import { LettersMatrix, LetterStatus } from "../../models/pokedle";
 import { Keyboard } from "../../components/Keyboard";
 import { Letter } from "../../components/Letter";
-import { ToastType, useToast } from '../../context/ToastContext';
 import { KeyboardKeysActions } from '../../models/keyboard';
-import { Dialog } from "../../components/Dialog";
 
 type PokedleProps = {
   answer: string
@@ -21,11 +19,9 @@ type PokedleProps = {
 
 const MAX_TRIES = 6;
 const FLIP_ANIMATION_DELAY = 100
-const FLIP_ANIMATION_DURATION = 400 - FLIP_ANIMATION_DELAY
 
 export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
   const pokemonNameLength = answer.length;
-  const lettersRowAnimationDuration = pokemonNameLength  * FLIP_ANIMATION_DURATION
 
   const [letters, setLetters] = useState(
     generateLetters(pokemonNameLength, MAX_TRIES)
@@ -33,7 +29,6 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
   const [tries, setTries] = useState(0);
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
   const [win, setWin] = useState(false)
-  const show = useToast()
 
   const loose = !win && tries === MAX_TRIES
   const endGame = loose || win
@@ -82,7 +77,6 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
 
     const newLetters = LettersMatrix.checkLetters(letters, tries, answer);
     
-    setWin(LettersMatrix.win(newLetters[tries], answer))
     setLetters(newLetters);
     setTries(tries + 1);
     setCurrentLetterIndex(0);
@@ -106,20 +100,28 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
     setLetters(generateLetters(pokemonNameLength, MAX_TRIES))
     setTries(0)
     setCurrentLetterIndex(0)
-    setWin(false)
   }
 
   const calculateAnimationDelay = (index: number, ms: number) => index * ms
 
   useEffect(() => {
-    if (!win) return
-    const timeout = setTimeout(() => {
-      show({message: 'Has ganado', type: ToastType.SUCCESS, duration: 2000})
-    }, lettersRowAnimationDuration)
+    const wordLength = LettersMatrix.getWordFromARow(letters, tries).length
+    if (wordLength !== answer.length) return
 
-    return () => clearTimeout(timeout)
+    const words = LettersMatrix.getWordsFromMatrix(letters)
+    localStorage.setItem('words', JSON.stringify(words))
+  }, [letters, answer, tries])
 
-  }, [win, show, lettersRowAnimationDuration])
+  useEffect(() => {
+    const words = localStorage.getItem('words')
+
+    if (!words) return
+
+    const letters = generateLettersFromLocalStorage(JSON.parse(words), answer)
+    setLetters(letters)
+    setWin(LettersMatrix.win(letters, answer))
+    setTries(words.length - 1)
+  }, [answer])
 
   return (
     <PokedleRoot>
@@ -143,9 +145,6 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
         {endGame && <button onClick={() => reset()}>Reset</button>}
       </LettersContainer>
       <Keyboard onKeyPress={onKeyPress} />
-      <Dialog open={endGame} onClose={reset}>
-        <div>perdiste</div>
-      </Dialog>
     </PokedleRoot>
   );
 };

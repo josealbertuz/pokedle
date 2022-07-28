@@ -1,6 +1,6 @@
 import React from "react";
 import { Portal } from "../Portal";
-import { CloseButton, Content, DialogWrapper } from "./Dialog.styles";
+import { Backdrop, CloseButton, DialogContent } from "./Dialog.styles";
 
 type DialogProps = {
   open: boolean;
@@ -9,17 +9,22 @@ type DialogProps = {
   children: JSX.Element;
 };
 
-export const Dialog = ({ children, open, onClose, keepState = false }: DialogProps) => {
+export const Dialog = ({
+  children,
+  open,
+  onClose,
+  keepState = false,
+}: DialogProps) => {
   if (!open && !keepState) return null;
 
   return (
     <Portal id="portal">
-      <DialogWrapper open={open}>
-        <Content>
+      <Backdrop>
+        <DialogContent open={open}>
           <CloseButton onClick={onClose} color="white" role="button" />
           {children}
-        </Content>
-      </DialogWrapper>
+        </DialogContent>
+      </Backdrop>
     </Portal>
   );
 };
