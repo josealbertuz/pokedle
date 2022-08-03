@@ -6,7 +6,7 @@ import {
   LettersGrid,
   LettersRow,
 } from "./Pokedle.styles";
-import { generateLetters, generateLettersFromLocalStorage } from '../../utils/utils';
+import { areWordsFromLocalStorageValid, generateLetters, generateLettersFromLocalStorage } from '../../utils/utils';
 import { LettersMatrix, LetterStatus } from "../../models/pokedle";
 import { Keyboard } from "../../components/Keyboard";
 import { Letter } from "../../components/Letter";
@@ -113,14 +113,15 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
   }, [letters, answer, tries])
 
   useEffect(() => {
-    const words = localStorage.getItem('words')
+    const words = JSON.parse(localStorage.getItem('words') ?? '[]')
 
-    if (!words) return
-
-    const letters = generateLettersFromLocalStorage(JSON.parse(words), answer)
+    if (!words || !areWordsFromLocalStorageValid(words, answer.length)) return;
+    
+    const letters = generateLettersFromLocalStorage(words, answer)
+    const tries = words.filter(Boolean).length
     setLetters(letters)
-    setWin(LettersMatrix.win(letters, answer))
-    setTries(words.length - 1)
+    setWin(LettersMatrix.win(letters[tries - 1], answer))
+    setTries(tries)
   }, [answer])
 
   return (

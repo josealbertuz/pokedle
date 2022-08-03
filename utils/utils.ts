@@ -30,23 +30,41 @@ export const generateLetters = (
     })
   );
 
-export const generateLettersFromLocalStorage = (words: string[], answer: string): Letter[][] => {
-  return Array.from({length: words.length}).map((_, rowIndex) => {
-    const word = words[rowIndex]
-    
-    if (word) return word.split('').map((letter, index) => Letters.checkLetter({letter, index, answer}))
+export const generateLettersFromLocalStorage = (
+  words: string[],
+  answer: string
+): Letter[][] => {
+  return Array.from({ length: words.length }).map((_, rowIndex) => {
+    const word = words[rowIndex];
 
-    return Array.from<Letter>({length: answer.length}).fill({
+    if (word)
+      return word
+        .split("")
+        .map((letter, index) => Letters.checkLetter({ letter, index, answer }));
+
+    return Array.from<Letter>({ length: answer.length }).fill({
       value: "",
       status: LetterStatus.EMPTY,
       animate: false,
-    })
-  })
+    });
+  });
+};
+
+export const isStringArray = (
+  value: unknown
+): value is string[] => {
+  return (
+    Array.isArray(value) && value.length > 0 && value.every((value) => typeof value === "string")
+  );
+};
+
+export const areWordsFromLocalStorageValid = (words: unknown, answerLength: number) => {
+  return isStringArray(words) && words.every(word => typeof word === 'string' && word.length === answerLength)
 }
 
 export const createWrapperElementAndAppendToBody = (id: string) => {
-  const wrapperElement = document.createElement('div')
-  wrapperElement.setAttribute('id', id)
-  document.body.appendChild(wrapperElement)
-  return wrapperElement
+  const wrapperElement = document.createElement("div");
+  wrapperElement.setAttribute("id", id);
+  document.body.appendChild(wrapperElement);
+  return wrapperElement;
 };
