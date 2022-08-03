@@ -25,7 +25,7 @@ export const generateLetters = (
   Array.from<Letter[]>({ length: tries }).map(() =>
     Array.from<Letter>({ length: pokemonNameLength }).fill({
       value: "",
-      status: LetterStatus.EMPTY,
+      status: LetterStatus.NOT_CHECKED,
       animate: false,
     })
   );
@@ -44,7 +44,7 @@ export const generateLettersFromLocalStorage = (
 
     return Array.from<Letter>({ length: answer.length }).fill({
       value: "",
-      status: LetterStatus.EMPTY,
+      status: LetterStatus.NOT_CHECKED,
       animate: false,
     });
   });

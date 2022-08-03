@@ -46,18 +46,15 @@ export const LetterBack = styled(LetterSide, {
       [LetterStatus.CORRECT]: {
         backgroundColor: "$correct",
       },
-      [LetterStatus.EMPTY]: {
-        
-      },
-      [LetterStatus.HAS_LETTER]: {
-
-      },
       [LetterStatus.NOT_PRESENT]: {
         backgroundColor: '$absent'
       },
       [LetterStatus.PRESENT]: {
         backgroundColor: '$present'
       },
+      [LetterStatus.NOT_CHECKED]: {
+        
+      }
     },
   },
 })

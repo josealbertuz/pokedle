@@ -40,7 +40,7 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
       letters,
       {
         value,
-        status: LetterStatus.HAS_LETTER,
+        status: LetterStatus.NOT_CHECKED,
       },
       {
         row: tries,
@@ -59,7 +59,7 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
       letters,
       {
         value: "",
-        status: LetterStatus.EMPTY,
+        status: LetterStatus.NOT_CHECKED,
       },
       {
         row: tries,

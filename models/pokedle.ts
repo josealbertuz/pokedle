@@ -1,6 +1,5 @@
 export enum LetterStatus {
-  EMPTY = "EMTPY",
-  HAS_LETTER = "HAS_LETTER",
+  NOT_CHECKED = 'NOT_CHECKED',
   CORRECT = "CORRECT",
   NOT_PRESENT = "NOT_PRESENT",
   PRESENT = "PRESENT",
