@@ -1,5 +1,5 @@
 export enum LetterStatus {
-  NOT_CHECKED = 'NOT_CHECKED',
+  NOT_CHECKED = "NOT_CHECKED",
   CORRECT = "CORRECT",
   NOT_PRESENT = "NOT_PRESENT",
   PRESENT = "PRESENT",
@@ -78,10 +78,12 @@ export const LettersMatrix = {
 
     return userAnswer === pokemonName && isAnswerCorrect;
   },
-  getWordFromARow: (letters: Letter[][], rowIndex: number) =>
-    letters[rowIndex].map((letter) => letter.value).join(""),
+  getWordFromARow: (letters: Letter[][], rowIndex: number) => {
+    console.log(letters[rowIndex])
+    return letters[rowIndex].map((letter) => letter.value).join("");
+  },
   getWordsFromMatrix: (letters: Letter[][]) =>
-    letters.map((lettersRow) =>
-      lettersRow.map((letter) => letter.value).join("")
-    ),
+    letters
+      .map((lettersRow) => lettersRow.map((letter) => letter.value).join(""))
+      .filter(Boolean),
 };

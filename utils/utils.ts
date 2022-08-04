@@ -32,9 +32,10 @@ export const generateLetters = (
 
 export const generateLettersFromLocalStorage = (
   words: string[],
-  answer: string
+  answer: string,
+  tries: number
 ): Letter[][] => {
-  return Array.from({ length: words.length }).map((_, rowIndex) => {
+  return Array.from({ length: tries }).map((_, rowIndex) => {
     const word = words[rowIndex];
 
     if (word)

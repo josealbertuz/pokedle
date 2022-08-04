@@ -30,6 +30,7 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
   const [win, setWin] = useState(false)
 
+  const pressedLetters = letters[tries - 1] ?? letters[tries];
   const loose = !win && tries === MAX_TRIES
   const endGame = loose || win
 
@@ -79,7 +80,10 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
     
     setLetters(newLetters);
     setTries(tries + 1);
+    setWin(LettersMatrix.win(newLetters[tries], answer));
     setCurrentLetterIndex(0);
+    const words = LettersMatrix.getWordsFromMatrix(letters);
+    localStorage.setItem("words", JSON.stringify(words));
   };
 
   const onKeyPress = (value: string) => {
@@ -105,20 +109,12 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
   const calculateAnimationDelay = (index: number, ms: number) => index * ms
 
   useEffect(() => {
-    const wordLength = LettersMatrix.getWordFromARow(letters, tries).length
-    if (wordLength !== answer.length) return
-
-    const words = LettersMatrix.getWordsFromMatrix(letters)
-    localStorage.setItem('words', JSON.stringify(words))
-  }, [letters, answer, tries])
-
-  useEffect(() => {
     const words = JSON.parse(localStorage.getItem('words') ?? '[]')
 
     if (!words || !areWordsFromLocalStorageValid(words, answer.length)) return;
     
-    const letters = generateLettersFromLocalStorage(words, answer)
-    const tries = words.filter(Boolean).length
+    const letters = generateLettersFromLocalStorage(words, answer, MAX_TRIES)
+    const tries = words.length
     setLetters(letters)
     setWin(LettersMatrix.win(letters[tries - 1], answer))
     setTries(tries)
@@ -145,7 +141,7 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
         </LettersGrid>
         {endGame && <button onClick={() => reset()}>Reset</button>}
       </LettersContainer>
-      <Keyboard onKeyPress={onKeyPress} />
+      <Keyboard onKeyPress={onKeyPress} pressedLetters={pressedLetters}/>
     </PokedleRoot>
   );
 };
