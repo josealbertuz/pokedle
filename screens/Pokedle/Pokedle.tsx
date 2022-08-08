@@ -11,6 +11,7 @@ import { LettersMatrix, LetterStatus } from "../../models/pokedle";
 import { Keyboard } from "../../components/Keyboard";
 import { Letter } from "../../components/Letter";
 import { KeyboardKeysActions } from '../../models/keyboard';
+import { KEYS } from '../../constants/keyboard';
 
 type PokedleProps = {
   answer: string
@@ -87,12 +88,12 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
   };
 
   const onKeyPress = (value: string) => {
-    if (value === KeyboardKeysActions.BACK) {
+    if (value === KeyboardKeysActions.BACKSPACE) {
       removeLetter();
       return;
     }
 
-    if (value === KeyboardKeysActions.SEND) {
+    if (value === KeyboardKeysActions.ENTER) {
       checkAnswer();
       return;
     }

@@ -1,10 +1,16 @@
-import { FLATTEN_KEYS } from "../constants/keyboard"
+import { KEYS_ARRAY } from '../constants/keyboard';
+
+export type Keys = typeof KEYS_ARRAY[number]
+
+export type KeboardKey = {
+  label: string;
+  value: Keys;
+};
+
+export type KeyboardKeys = KeboardKey[][];
 
 export enum KeyboardKeysActions {
-    BACK = 'BACK',
-    SEND = 'SEND',
-    LETTER = 'LETTER'
+  BACKSPACE = "BACKSPACE",
+  ENTER = "ENTER",
+  LETTER = "LETTER",
 }
-
-export type KeyboardKeys = typeof FLATTEN_KEYS[number]
-
