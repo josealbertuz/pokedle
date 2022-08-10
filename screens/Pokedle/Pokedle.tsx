@@ -7,7 +7,7 @@ import {
   LettersRow,
 } from "./Pokedle.styles";
 import { areWordsFromLocalStorageValid, generateLetters, generateLettersFromLocalStorage } from '../../utils/utils';
-import { LettersMatrix, LetterStatus } from "../../models/pokedle";
+import { Letters, LettersMatrix, LetterStatus } from "../../models/pokedle";
 import { Keyboard } from "../../components/Keyboard";
 import { Letter } from "../../components/Letter";
 import { KeyboardKeysActions } from '../../models/keyboard';
@@ -75,7 +75,10 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
 
   const checkAnswer = () => {
 
-    if (letters[tries][pokemonNameLength - 1].value === '') return
+    const rowHasAllLetters = letters[tries][pokemonNameLength - 1].value !== ''
+    const isPokemon = Letters.isPokemon(letters[tries], pokemonNames)
+
+    if (!rowHasAllLetters || !isPokemon) return
 
     const newLetters = LettersMatrix.checkLetters(letters, tries, answer);
     

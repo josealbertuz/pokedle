@@ -8,7 +8,7 @@ export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
       answer: "PIKACHU",
-      pokemonNames: ['']
+      pokemonNames: ['PIKACHU']
     },
     revalidate: DAY_SECONDS,
   };

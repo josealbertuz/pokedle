@@ -44,6 +44,11 @@ export const Letters = {
       animate: true,
     };
   },
+  isPokemon: (letters: Letter[], pokemonNames: string[]): boolean => {
+    const pokemonGuess = letters.map(letter => letter.value).join('')
+
+    return pokemonNames.includes(pokemonGuess)
+  }
 };
 
 export const LettersMatrix = {
