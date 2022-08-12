@@ -5,6 +5,20 @@ export enum LetterStatus {
   PRESENT = "PRESENT",
 }
 
+export enum LetterEmoji {
+  CORRECT = '🟩',
+  PRESENT = '🟨',
+  NOT_PRESENT = '⬜️',
+  NOT_CHECKED = '❌'
+}
+
+export const MapLetterStatusToEmoji: Record<LetterStatus, LetterEmoji> = {
+  [LetterStatus.CORRECT]: LetterEmoji.CORRECT,
+  [LetterStatus.NOT_PRESENT]: LetterEmoji.NOT_PRESENT,
+  [LetterStatus.PRESENT]: LetterEmoji.PRESENT,
+  [LetterStatus.NOT_CHECKED]: LetterEmoji.NOT_CHECKED
+}
+
 export type Letter = {
   value: string;
   status: LetterStatus;
@@ -48,7 +62,10 @@ export const Letters = {
     const pokemonGuess = letters.map(letter => letter.value).join('')
 
     return pokemonNames.includes(pokemonGuess)
-  }
+  },
+  generateEmojis: (letters: Letter[][]) => letters.map(word => {
+    return word.map(({status}) => MapLetterStatusToEmoji[status]).join('').concat('\n')
+   }).join('').slice(0, -1)
 };
 
 export const LettersMatrix = {

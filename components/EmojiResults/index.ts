@@ -1,0 +1,1 @@
+export { EmojiResults } from "./EmojiResults";

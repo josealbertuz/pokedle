@@ -11,7 +11,6 @@ import { Letters, LettersMatrix, LetterStatus } from "../../models/pokedle";
 import { Keyboard } from "../../components/Keyboard";
 import { Letter } from "../../components/Letter";
 import { KeyboardKeysActions } from '../../models/keyboard';
-import { KEYS } from '../../constants/keyboard';
 
 type PokedleProps = {
   answer: string
