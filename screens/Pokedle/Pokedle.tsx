@@ -11,6 +11,7 @@ import { Letters, LettersMatrix, LetterStatus } from "../../models/pokedle";
 import { Keyboard } from "../../components/Keyboard";
 import { Letter } from "../../components/Letter";
 import { KeyboardKeysActions } from '../../models/keyboard';
+import { useWords } from '../../hooks/use-words';
 
 type PokedleProps = {
   answer: string
@@ -29,6 +30,7 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
   const [tries, setTries] = useState(0);
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
   const [win, setWin] = useState(false)
+  const [words, setWords] = useWords(answer)
 
   const pressedLetters = letters[tries - 1] ?? letters[tries];
   const loose = !win && tries === MAX_TRIES
@@ -81,12 +83,12 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
 
     const newLetters = LettersMatrix.checkLetters(letters, tries, answer);
     
+    const word = LettersMatrix.getWordFromARow(letters, tries);
+    setWords([...words, word])
     setLetters(newLetters);
     setTries(tries + 1);
     setWin(LettersMatrix.win(newLetters[tries], answer));
     setCurrentLetterIndex(0);
-    const words = LettersMatrix.getWordsFromMatrix(letters);
-    localStorage.setItem("words", JSON.stringify(words));
   };
 
   const onKeyPress = (value: string) => {
@@ -112,16 +114,14 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
   const calculateAnimationDelay = (index: number, ms: number) => index * ms
 
   useEffect(() => {
-    const words = JSON.parse(localStorage.getItem('words') ?? '[]')
-
-    if (!words || !areWordsFromLocalStorageValid(words, answer.length)) return;
+    if (!words.length) return
     
     const letters = generateLettersFromLocalStorage(words, answer, MAX_TRIES)
     const tries = words.length
     setLetters(letters)
     setWin(LettersMatrix.win(letters[tries - 1], answer))
     setTries(tries)
-  }, [answer])
+  }, [answer, words])
 
   return (
     <PokedleRoot>
