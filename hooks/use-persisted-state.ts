@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 const getItemFromLocalStorage = <T>(key: string, fallback: T) => {
   const item = localStorage.getItem(key);
@@ -11,21 +11,23 @@ const getItemFromLocalStorage = <T>(key: string, fallback: T) => {
   return (JSON.parse(item) as T);
 };
 
-type PersistedState<T> = [T, (newState: T) => void]
+type PersistedState<T> = [T | undefined, (newState: T) => void]
 
 export const usePersistedState = <T>(
   key: string,
   initialState: T
 ): PersistedState<T> => {
 
-  const [state, setState] = useState(() =>
-    getItemFromLocalStorage(key, initialState)
-  );
+  const [state, setState] = useState<T | undefined>();
 
   const setLocalStorageState = useCallback((newState: T) => {
     localStorage.setItem(key, JSON.stringify(newState))
     setState(newState)
-  }, [key])
+  }, [])
+
+  useEffect(() => {
+    setState(getItemFromLocalStorage(key, initialState));
+  }, [])
 
   return [state, setLocalStorageState];
 };
