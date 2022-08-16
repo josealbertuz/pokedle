@@ -76,6 +76,8 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
 
   const checkAnswer = () => {
 
+    if (endGame) return
+
     const rowHasAllLetters = letters[tries][pokemonNameLength - 1].value !== ''
     const isPokemon = Letters.isPokemon(letters[tries], pokemonNames)
 
@@ -109,6 +111,8 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
     setLetters(generateLetters(pokemonNameLength, MAX_TRIES))
     setTries(0)
     setCurrentLetterIndex(0)
+    setWin(false)
+    setWords([])
   }
 
   const calculateAnimationDelay = (index: number, ms: number) => index * ms
