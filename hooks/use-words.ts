@@ -7,7 +7,7 @@ export const useWords = (answer: string): WordsState => {
   const [words, setWords] = usePersistedState<string[]>("words", []);
 
   const validatedWords =
-    words && areWordsFromLocalStorageValid(words, answer.length)
+    areWordsFromLocalStorageValid(words, answer.length)
       ? words
       : [];
 
