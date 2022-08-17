@@ -6,12 +6,13 @@ import {
   LettersGrid,
   LettersRow,
 } from "./Pokedle.styles";
-import { areWordsFromLocalStorageValid, generateLetters, generateLettersFromLocalStorage } from '../../utils/utils';
+import { generateLetters, generateLettersFromLocalStorage } from '../../utils/utils';
 import { Letters, LettersMatrix, LetterStatus } from "../../models/pokedle";
 import { Keyboard } from "../../components/Keyboard";
 import { Letter } from "../../components/Letter";
 import { KeyboardKeysActions } from '../../models/keyboard';
 import { useWords } from '../../hooks/use-words';
+import { useStatistics } from '../../hooks/use-statistics';
 
 type PokedleProps = {
   answer: string
@@ -31,6 +32,7 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
   const [win, setWin] = useState(false)
   const [words, setWords] = useWords(answer)
+  const [_, setStatistics] = useStatistics()
 
   const pressedLetters = letters[tries - 1] ?? letters[tries];
   const loose = !win && tries === MAX_TRIES
@@ -84,12 +86,15 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
     if (!rowHasAllLetters || !isPokemon) return
 
     const newLetters = LettersMatrix.checkLetters(letters, tries, answer);
-    
     const word = LettersMatrix.getWordFromARow(letters, tries);
+    const win = LettersMatrix.win(newLetters[tries], answer);
+
+    if (win) setStatistics(newLetters)
+    
     setWords([...words, word])
     setLetters(newLetters);
     setTries(tries + 1);
-    setWin(LettersMatrix.win(newLetters[tries], answer));
+    setWin(win);
     setCurrentLetterIndex(0);
   };
 

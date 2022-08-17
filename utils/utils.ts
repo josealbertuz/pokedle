@@ -1,4 +1,8 @@
-import { Letter, Letters, LetterStatus } from "../models/pokedle";
+import {
+  Letter,
+  Letters,
+  LetterStatus,
+} from "../models/pokedle";
 
 export const getRandomItemFromArray = <T>(array: T[]) =>
   array[Math.ceil(Math.random() * array.length)];
@@ -51,17 +55,34 @@ export const generateLettersFromLocalStorage = (
   });
 };
 
-export const isStringArray = (
-  value: unknown
-): value is string[] => {
+export const isStringArray = (value: unknown): value is string[] => {
   return (
-    Array.isArray(value) && value.length > 0 && value.every((value) => typeof value === "string")
+    Array.isArray(value) &&
+    value.length > 0 &&
+    value.every((value) => typeof value === "string")
   );
 };
 
-export const areWordsFromLocalStorageValid = (words: unknown, answerLength: number) => {
-  return isStringArray(words) && words.every(word => typeof word === 'string' && word.length === answerLength)
-}
+export const isObject = (value: unknown): value is object =>
+  typeof value === "object";
+
+export const getValuesFromAnObjectRecursive = (object: object): unknown[] => {
+  return Object.values(object).flatMap((entry) =>
+    typeof entry === "object" ? getValuesFromAnObjectRecursive(entry) : entry
+  );
+};
+
+export const areWordsFromLocalStorageValid = (
+  words: unknown,
+  answerLength: number
+) => {
+  return (
+    isStringArray(words) &&
+    words.every(
+      (word) => typeof word === "string" && word.length === answerLength
+    )
+  );
+};
 
 export const createWrapperElementAndAppendToBody = (id: string) => {
   const wrapperElement = document.createElement("div");

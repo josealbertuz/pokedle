@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export enum LetterStatus {
   NOT_CHECKED = "NOT_CHECKED",
   CORRECT = "CORRECT",
@@ -6,28 +8,112 @@ export enum LetterStatus {
 }
 
 export enum LetterEmoji {
-  CORRECT = '🟩',
-  PRESENT = '🟨',
-  NOT_PRESENT = '⬜️',
-  NOT_CHECKED = '❌'
+  CORRECT = "🟩",
+  PRESENT = "🟨",
+  NOT_PRESENT = "⬜️",
+  NOT_CHECKED = "❌",
 }
 
 export const MapLetterStatusToEmoji: Record<LetterStatus, LetterEmoji> = {
   [LetterStatus.CORRECT]: LetterEmoji.CORRECT,
   [LetterStatus.NOT_PRESENT]: LetterEmoji.NOT_PRESENT,
   [LetterStatus.PRESENT]: LetterEmoji.PRESENT,
-  [LetterStatus.NOT_CHECKED]: LetterEmoji.NOT_CHECKED
-}
+  [LetterStatus.NOT_CHECKED]: LetterEmoji.NOT_CHECKED,
+};
+
+export const StoredStatisticsSchema = z.object({
+  currentStreak: z.number().nonnegative(),
+  guesses: z.record(z.union([z.string(), z.number()]), z.number().nonnegative()),
+  fail: z.number().nonnegative(),
+  maxStreak: z.number().nonnegative(),
+});
+
+export type StoredStatistics = z.infer<typeof StoredStatisticsSchema>
+
+export type Statistics = {
+  gamesPlayed: number,
+  victoryPercentage: number,
+  currentStreak: number,
+  maxStreak: number,
+  failsPercentage: number,
+  guessesPercentages: {
+    [key: number]: number;
+  };
+};
+
+export const Statistics = {
+  generateFromLetters: (
+    statistics: StoredStatistics,
+    letters: Letter[][]
+  ): StoredStatistics => {
+    const winTry =
+      letters.findIndex((lettersRow) =>
+        lettersRow.every(({ status }) => status === LetterStatus.CORRECT)
+      ) + 1;
+
+    const loose = winTry === 0;
+
+    return {
+      ...statistics,
+      currentStreak: !loose ? statistics.currentStreak + 1 : 0,
+      fail: !loose ? statistics.fail : statistics.fail + 1,
+      maxStreak: loose ? statistics.currentStreak : statistics.maxStreak + 1,
+      ...(!loose && {
+        guesses: {
+          ...statistics.guesses,
+          [winTry]: statistics.guesses[winTry] + 1,
+        },
+      }),
+    };
+  },
+  totalVictories: (storedStatistics: StoredStatistics) =>
+    Object.values(storedStatistics.guesses).reduce(
+      (sum, currentValue) => sum + currentValue,
+      0
+    ),
+  totalGamesPlayed: (storedStatistics: StoredStatistics) =>
+    Statistics.totalVictories(storedStatistics) + storedStatistics.fail,
+  victoryPercentage: (storedStatistics: StoredStatistics) =>
+    Math.ceil(
+      (Statistics.totalVictories(storedStatistics) /
+        Statistics.totalGamesPlayed(storedStatistics)) *
+        100
+    ) || 0,
+  failPercentage: (storedStatistics: StoredStatistics) =>
+    Math.ceil(
+      (storedStatistics.fail / Statistics.totalGamesPlayed(storedStatistics)) *
+        100
+    ) || 0,
+  guessPercentage: (storedStatistics: StoredStatistics, guess: number) =>
+    Math.ceil(
+      (storedStatistics.guesses[guess] /
+        Statistics.totalGamesPlayed(storedStatistics)) *
+        100
+    ) || 0,
+  guessesPercentajes: (
+    storedStatistics: StoredStatistics
+  ): Pick<Statistics, "guessesPercentages"> =>
+    Object.keys(storedStatistics.guesses).reduce(
+      (percentages, key) => ({
+        ...percentages,
+        [key]: Statistics.guessPercentage(storedStatistics, Number(key)),
+      }),
+      {} as Pick<Statistics, "guessesPercentages">
+    ),
+  generateFromStorage: (storedStatistics: StoredStatistics): Statistics => ({
+    gamesPlayed: Statistics.totalGamesPlayed(storedStatistics),
+    victoryPercentage: Statistics.victoryPercentage(storedStatistics),
+    currentStreak: storedStatistics.currentStreak,
+    maxStreak: storedStatistics.maxStreak,
+    failsPercentage: Statistics.failPercentage(storedStatistics),
+    guessesPercentages: Statistics.guessesPercentajes(storedStatistics),
+  }),
+};
 
 export type Letter = {
   value: string;
   status: LetterStatus;
   animate?: boolean;
-};
-
-type MatrixPosition = {
-  row: number;
-  column: number;
 };
 
 type CheckLetterParams = {
@@ -59,13 +145,25 @@ export const Letters = {
     };
   },
   isPokemon: (letters: Letter[], pokemonNames: string[]): boolean => {
-    const pokemonGuess = letters.map(letter => letter.value).join('')
+    const pokemonGuess = letters.map((letter) => letter.value).join("");
 
-    return pokemonNames.includes(pokemonGuess)
+    return pokemonNames.includes(pokemonGuess);
   },
-  generateEmojis: (letters: Letter[][]) => letters.map(word => {
-    return word.map(({status}) => MapLetterStatusToEmoji[status]).join('').concat('\n')
-   }).join('').slice(0, -1)
+  generateEmojis: (letters: Letter[][]) =>
+    letters
+      .map((word) => {
+        return word
+          .map(({ status }) => MapLetterStatusToEmoji[status])
+          .join("")
+          .concat("\n");
+      })
+      .join("")
+      .slice(0, -1),
+};
+
+type MatrixPosition = {
+  row: number;
+  column: number;
 };
 
 export const LettersMatrix = {
@@ -100,10 +198,8 @@ export const LettersMatrix = {
 
     return userAnswer === pokemonName && isAnswerCorrect;
   },
-  getWordFromARow: (letters: Letter[][], rowIndex: number) => {
-    console.log(letters[rowIndex])
-    return letters[rowIndex].map((letter) => letter.value).join("");
-  },
+  getWordFromARow: (letters: Letter[][], rowIndex: number) =>
+    letters[rowIndex].map((letter) => letter.value).join(""),
   getWordsFromMatrix: (letters: Letter[][]) =>
     letters
       .map((lettersRow) => lettersRow.map((letter) => letter.value).join(""))
