@@ -11,14 +11,14 @@ const getItemFromLocalStorage = <T>(key: string, fallback: T) => {
   return (JSON.parse(item) as T);
 };
 
-type PersistedState<T> = [T | undefined, (newState: T) => void]
+type PersistedState<T> = [T, (newState: T) => void]
 
 export const usePersistedState = <T>(
   key: string,
   initialState: T
 ): PersistedState<T> => {
 
-  const [state, setState] = useState<T | undefined>();
+  const [state, setState] = useState<T>(initialState);
 
   const setLocalStorageState = useCallback((newState: T) => {
     localStorage.setItem(key, JSON.stringify(newState))
