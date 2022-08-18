@@ -1,4 +1,5 @@
 import { keyframes, styled } from "@stitches/react";
+import { motion } from "framer-motion";
 import { LetterStatus } from '../../models/pokedle';
 
 export const LetterRoot = styled("div", {
@@ -12,23 +13,23 @@ export const flipAnimation = keyframes({
   to: {transform: 'rotateX(0.5turn)'}
 })
 
-export const LetterCard = styled('div', {
+export const LetterCard = styled(motion.div, {
   position: 'relative',
   backfaceVisibility: 'hidden',
   height: '100%',
   backgroundColor: '$background',
 })
 
-const LetterSide = styled('div', {
+const LetterSide = styled("div", {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  border: "2px solid black",
-  height: '100%',
-  width: '100%',
+  height: "100%",
+  width: "100%",
   fontWeight: "bold",
-  backgroundColor: '$background',
-})
+  borderRadius: "5px",
+  backgroundColor: "$background",
+});
 
 export const LetterFront = styled(LetterSide, {
   position: 'absolute',

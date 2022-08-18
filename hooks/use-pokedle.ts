@@ -24,6 +24,7 @@ type PokedleState = {
   endGame: boolean;
   win: boolean;
   loose: boolean;
+  tries: number;
   addLetter: (value: string) => void;
   removeLetter: () => void;
   checkAnswer: () => void;
@@ -131,6 +132,7 @@ export const usePokedle = ({
     endGame,
     win,
     loose,
+    tries,
     addLetter,
     removeLetter,
     checkAnswer,

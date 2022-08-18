@@ -8,7 +8,11 @@ import {
 import { Keyboard } from "../../components/Keyboard";
 import { Letter } from "../../components/Letter";
 import { KeyboardKeysActions } from "../../models/keyboard";
-import { FLIP_ANIMATION_DELAY, MAX_TRIES } from "../../constants/pokedle";
+import {
+  FLIP_ANIMATION_DELAY,
+  MAX_TRIES,
+  WIN_ANIMATION_DELAY,
+} from "../../constants/pokedle";
 import { usePokedle } from "../../hooks/use-pokedle";
 
 type PokedleProps = {
@@ -17,12 +21,21 @@ type PokedleProps = {
 };
 
 export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
-  const { letters, endGame, pressedLetters, addLetter, removeLetter, checkAnswer, reset } =
-    usePokedle({
-      answer,
-      maxTries: MAX_TRIES,
-      pokemonNames,
-    });
+  const {
+    letters,
+    endGame,
+    win,
+    tries,
+    pressedLetters,
+    addLetter,
+    removeLetter,
+    checkAnswer,
+    reset,
+  } = usePokedle({
+    answer,
+    maxTries: MAX_TRIES,
+    pokemonNames,
+  });
 
   const onKeyPress = (value: string) => {
     if (value === KeyboardKeysActions.BACKSPACE) {
@@ -38,7 +51,22 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
     addLetter(value);
   };
 
-  const calculateAnimationDelay = (index: number, ms: number) => index * ms;
+  const calculateFlipAnimationDelay = (index: number, seconds: number) =>
+    index * seconds;
+
+  const calculateWinAnimationDelay = ({
+    totalLetters,
+    index,
+    flipAnimationDelay,
+    delay,
+  }: {
+    totalLetters: number;
+    index: number;
+    flipAnimationDelay: number;
+    delay: number;
+  }) =>
+    calculateFlipAnimationDelay(totalLetters, flipAnimationDelay) +
+    delay * index;
 
   return (
     <PokedleRoot>
@@ -47,16 +75,23 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
         <LettersGrid>
           {letters.map((lettersRow, rowIndex) => (
             <LettersRow key={`letters-row-${rowIndex}`}>
-              {lettersRow.map(({ value, status, animate }, index) => (
+              {lettersRow.map(({ value, status, animate }, index, array) => (
                 <Letter
                   key={`letter-${index}`}
                   value={value}
                   status={status}
                   animate={animate}
-                  animationDelay={calculateAnimationDelay(
+                  flipAnimationDelay={calculateFlipAnimationDelay(
                     index,
                     FLIP_ANIMATION_DELAY
                   )}
+                  winAnimationDelay={calculateWinAnimationDelay({
+                    totalLetters: array.length,
+                    index,
+                    flipAnimationDelay: FLIP_ANIMATION_DELAY,
+                    delay: WIN_ANIMATION_DELAY,
+                  })}
+                  win={win && tries === rowIndex + 1}
                 />
               ))}
             </LettersRow>
