@@ -4,6 +4,7 @@ import {
   Letters,
   LettersMatrix,
   LetterStatus,
+  Statistics,
 } from "../models/pokedle";
 import {
   generateLetters,
@@ -25,6 +26,7 @@ type PokedleState = {
   win: boolean;
   loose: boolean;
   tries: number;
+  statistics: Statistics
   addLetter: (value: string) => void;
   removeLetter: () => void;
   checkAnswer: () => void;
@@ -43,7 +45,7 @@ export const usePokedle = ({
   const [tries, setTries] = useState(0);
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
   const [win, setWin] = useState(false);
-  const [_, setStatistics] = useStatistics();
+  const [statistics, setStatistics] = useStatistics();
 
   const pressedLetters = letters[tries - 1] ?? letters[tries];
   const loose = !win && tries === maxTries;
@@ -132,6 +134,7 @@ export const usePokedle = ({
     endGame,
     win,
     loose,
+    statistics,
     tries,
     addLetter,
     removeLetter,
