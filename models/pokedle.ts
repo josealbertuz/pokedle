@@ -108,6 +108,13 @@ export const Statistics = {
     failsPercentage: Statistics.failPercentage(storedStatistics),
     guessesPercentages: Statistics.guessesPercentajes(storedStatistics),
   }),
+  emojiPercentage: (percentage: number) => {
+    if (!percentage) return ''
+
+    const numberOfEmojis = Math.floor(percentage / 10)
+
+    return Array.from({length: numberOfEmojis}).fill('⬛️').join(' ')
+  }
 };
 
 export type Letter = {
