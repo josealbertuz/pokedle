@@ -10,6 +10,8 @@
     "test": "yarn run jest"
   },
   "dependencies": {
+    "@reach/dialog": "^0.17.0",
+    "@reach/visually-hidden": "^0.17.0",
     "@stitches/react": "^1.2.8",
     "axios": "^0.27.2",
     "date-fns": "^2.29.1",
