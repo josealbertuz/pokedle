@@ -1,30 +1,36 @@
-import React from "react";
-import { Portal } from "../Portal";
+import React, { PropsWithChildren } from "react";
 import { Backdrop, CloseButton, DialogContent } from "./Dialog.styles";
+import { GrClose } from "react-icons/gr";
+import VisuallyHidden from "@reach/visually-hidden";
 
-type DialogProps = {
+type DialogProps = PropsWithChildren<{
   open: boolean;
   keepState?: boolean;
+  modal?: boolean;
   onClose: () => void;
-  children: JSX.Element;
-};
+}>;
 
 export const Dialog = ({
-  children,
   open,
-  onClose,
   keepState = false,
+  modal = false,
+  onClose,
+  children,
 }: DialogProps) => {
   if (!open && !keepState) return null;
 
   return (
-    <Portal id="portal">
-      <Backdrop>
-        <DialogContent open={open}>
-          <CloseButton onClick={onClose} color="white" role="button" />
-          {children}
-        </DialogContent>
-      </Backdrop>
-    </Portal>
+    <Backdrop
+      onDismiss={onClose}
+      dangerouslyBypassFocusLock={modal}
+    >
+      <DialogContent>
+        <CloseButton onClick={onClose}>
+          <VisuallyHidden>Close</VisuallyHidden>
+          <GrClose />
+        </CloseButton>
+        {children}
+      </DialogContent>
+    </Backdrop>
   );
 };

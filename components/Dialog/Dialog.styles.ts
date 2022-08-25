@@ -1,22 +1,18 @@
 import { styled } from "@stitches/react";
-import { GrClose } from "react-icons/gr";
+import * as ReachDialog from '@reach/dialog'
 
-export const DialogContent = styled("dialog", {
+export const DialogContent = styled(ReachDialog.DialogContent, {
   border: "none",
   "--dialog-padding": "1em",
-  width: "min(500px, 100%)",
+  maxWidth: 'var(--max-game-width)',
+  width: '100%',
   margin: 0,
-  height: "400px",
+  height: "100%",
   position: "relative",
-  backgroundColor: "#FAFAFA",
   padding: "var(--dialog-padding)",
-
-  "@bp1": {
-    height: "100%",
-  },
 });
 
-export const Backdrop = styled("div", {
+export const Backdrop = styled(ReachDialog.DialogOverlay, {
   position: "fixed",
   display: "grid",
   placeItems: "center",
@@ -24,19 +20,28 @@ export const Backdrop = styled("div", {
   left: 0,
   width: "100%",
   height: "100%",
-  backgroundColor: "rgba(0, 0, 0, 0.5)",
+  backgroundColor: 'white'
 });
 
-export const CloseButton = styled(GrClose, {
+export const CloseButton = styled("button", {
+  display: "inline-grid",
+  placeContent: "center",
   position: "absolute",
-  right: 0,
-  top: 0,
-  transform: "translateY(-150%)",
+  right: "var(--dialog-padding)",
+  top: "var(--dialog-padding)",
   fontSize: "1.2rem",
+  minHeight: "2em",
+  minWidth: "2em",
+  border: "none",
+  backgroundColor: "transparent",
+  borderRadius: "10px",
 
-  "@bp1": {
-    transform: "transformY(0%)",
-    right: "var(--dialog-padding)",
-    top: "var(--dialog-padding)",
+  "&:hover": {
+    backgroundColor: "$background",
+    opacity: 0.5,
+  },
+
+  "&:focus": {
+    outlineColor: "$background",
   },
 });

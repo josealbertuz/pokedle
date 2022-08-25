@@ -1,5 +1,4 @@
 import { createStitches, globalCss } from '@stitches/react'
-import { relative } from 'path'
 
 export const { styled } = createStitches({
   theme: {
@@ -24,6 +23,10 @@ export const { styled } = createStitches({
 });
 
 export const globalStyles = globalCss({
+    ':root': {
+      '--max-game-width': '500px'
+    },
+
     '*': {
         boxSizing: 'border-box'
     },
