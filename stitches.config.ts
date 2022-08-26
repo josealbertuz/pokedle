@@ -8,6 +8,7 @@ export const { styled } = createStitches({
       error: "#bb3429",
       correct: "#6aaa64",
       background: "#d3d6da",
+      buttonHover: "#EFF6EF",
     },
   },
   media: {
@@ -19,6 +20,28 @@ export const { styled } = createStitches({
     hover: "(any-hover: hover)",
     dark: "(prefers-color-scheme: dark)",
     light: "(prefers-color-scheme: light)",
+  },
+  utils: {
+    px: (value: any) => ({
+      paddingLeft: value,
+      paddingRight: value,
+    }),
+    py: (value: any) => ({
+      paddingTop: value,
+      paddingBottom: value,
+    }),
+    mx: (value: any) => ({
+      marginLeft: value,
+      marginRight: value,
+    }),
+    my: (value: any) => ({
+      marginTop: value,
+      marginBottom: value,
+    }),
+    size: (value: any) => ({
+      width: value,
+      height: value
+    })
   },
 });
 
