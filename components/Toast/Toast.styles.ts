@@ -1,11 +1,11 @@
-import { styled } from "@stitches/react";
+import { styled } from "../../stitches.config";
 
 export const ToastRoot = styled("div", {
-  padding: '1em',
-  width: 'min(400px, 100%)',
-  position: 'fixed',
-  bottom: '16px',
-  right: '16px',
+  padding: "1em",
+  width: "min(400px, 100%)",
+  position: "fixed",
+  bottom: "16px",
+  right: "16px",
 
   variants: {
     type: {
