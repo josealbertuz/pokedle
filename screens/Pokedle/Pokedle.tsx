@@ -14,6 +14,8 @@ import {
   WIN_ANIMATION_DELAY,
 } from "../../constants/pokedle";
 import { usePokedle } from "../../hooks/use-pokedle";
+import { Navbar } from "../../components/Navbar";
+import { usePokedleDialogs } from "../../hooks/use-pokedle-dialogs";
 
 type PokedleProps = {
   answer: string;
@@ -36,6 +38,9 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
     maxTries: MAX_TRIES,
     pokemonNames,
   });
+
+  const { activeDialog, closeDialog, openHelpDialog, openStatisticsDialog } =
+    usePokedleDialogs();
 
   const onKeyPress = (value: string) => {
     if (value === KeyboardKeysActions.BACKSPACE) {
@@ -70,7 +75,7 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
 
   return (
     <PokedleRoot>
-      <Title>Pokedle</Title>
+      <Navbar onHelpClick={openHelpDialog} onStatisticsClick={openHelpDialog} />
       <LettersContainer>
         <LettersGrid>
           {letters.map((lettersRow, rowIndex) => (

@@ -8,11 +8,6 @@ export const PokedleRoot = styled("div", {
   height: '100vh'
 });
 
-export const Title = styled('h1', {
-    textAlign: 'center',
-    fontWeight: 'bold'
-})
-
 export const LettersContainer = styled('div', {
     flex: 1,
     padding: '1.5em'
