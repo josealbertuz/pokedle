@@ -42,6 +42,8 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
   const { activeDialog, closeDialog, openHelpDialog, openStatisticsDialog } =
     usePokedleDialogs();
 
+  const pressedLettersByTry = letters[tries - 1] ?? letters[tries];
+
   const onKeyPress = (value: string) => {
     if (value === KeyboardKeysActions.BACKSPACE) {
       removeLetter();
@@ -104,7 +106,7 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
         </LettersGrid>
         {endGame && <button onClick={() => reset()}>Reset</button>}
       </LettersContainer>
-      <Keyboard onKeyPress={onKeyPress} pressedLetters={pressedLetters} />
+      <Keyboard onKeyPress={onKeyPress} pressedLetters={pressedLettersByTry} />
     </PokedleRoot>
   );
 };

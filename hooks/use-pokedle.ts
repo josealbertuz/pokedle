@@ -21,7 +21,6 @@ type PokedleParams = {
 
 type PokedleState = {
   letters: Letter[][];
-  pressedLetters: Letter[];
   endGame: boolean;
   win: boolean;
   loose: boolean;
@@ -47,7 +46,6 @@ export const usePokedle = ({
   const [win, setWin] = useState(false);
   const [statistics, setStatistics] = useStatistics();
 
-  const pressedLetters = letters[tries - 1] ?? letters[tries];
   const loose = !win && tries === maxTries;
   const endGame = loose || win;
 
@@ -130,7 +128,6 @@ export const usePokedle = ({
 
   return {
     letters,
-    pressedLetters,
     endGame,
     win,
     loose,
