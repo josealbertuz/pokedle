@@ -1,7 +1,6 @@
 import {
   PokedleRoot,
   LettersContainer,
-  Title,
   LettersGrid,
   LettersRow,
 } from "./Pokedle.styles";
@@ -14,6 +13,8 @@ import {
   WIN_ANIMATION_DELAY,
 } from "../../constants/pokedle";
 import { usePokedle } from "../../hooks/use-pokedle";
+import { useEffect } from "react";
+import { MILLISECOND_SECOND } from "../../constants/time";
 import { Navbar } from "../../components/Navbar";
 import { usePokedleDialogs } from "../../hooks/use-pokedle-dialogs";
 
@@ -28,7 +29,6 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
     endGame,
     win,
     tries,
-    pressedLetters,
     addLetter,
     removeLetter,
     checkAnswer,
@@ -74,6 +74,29 @@ export const Pokedle = ({ answer, pokemonNames }: PokedleProps) => {
   }) =>
     calculateFlipAnimationDelay(totalLetters, flipAnimationDelay) +
     delay * index;
+
+  const secondsSpentUntilAnimationsEnded =
+    Math.ceil(
+      calculateFlipAnimationDelay(answer.length, FLIP_ANIMATION_DELAY) +
+        calculateWinAnimationDelay({
+          totalLetters: answer.length,
+          index: answer.length,
+          flipAnimationDelay: FLIP_ANIMATION_DELAY,
+          delay: WIN_ANIMATION_DELAY,
+        })
+    ) *
+      MILLISECOND_SECOND +
+    MILLISECOND_SECOND;
+
+  useEffect(() => {
+    if (!endGame) return;
+    const id = setTimeout(
+      openStatisticsDialog,
+      secondsSpentUntilAnimationsEnded
+    );
+
+    return () => clearTimeout(id);
+  }, [endGame, secondsSpentUntilAnimationsEnded, openStatisticsDialog]);
 
   return (
     <PokedleRoot>
