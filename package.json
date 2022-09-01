@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "yarn run jest"
+    "test": "yarn run jest",
+    "g": "hygen generator"
   },
   "dependencies": {
     "@reach/dialog": "^0.17.0",
@@ -30,6 +31,7 @@
     "@types/react-dom": "18.0.5",
     "eslint": "8.18.0",
     "eslint-config-next": "12.1.6",
+    "hygen": "^6.2.8",
     "jest": "^28.1.1",
     "jest-environment-jsdom": "^28.1.1",
     "typescript": "4.7.4"
